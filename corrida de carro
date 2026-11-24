@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projetos P5.js - Arte e Corrida</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+        background-color: #141414;
+        color: white;
+        font-family: sans-serif;
+      }
+      h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .bloco {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bloco">
+      <h2>1. Arte Interativa</h2>
+      <div id="tela-arte"></div>
+    </div>
+
+    <div class="bloco">
+      <h2>2. Jogo de Corrida</h2>
+      <div id="tela-corrida"></div>
+    </div>
+
+    <script>
+      // --- PROJETO 1: ARTE INTERATIVA ---
+      new p5(function (p) {
+        p.setup = function () {
+          let cnv = p.createCanvas(360, 260);
+          cnv.parent("tela-arte");
+          p.background(20);
+        };
+
+        p.draw = function () {
+          p.background(20, 20, 20, 25);
+          let vermelho = p.map(p.mouseX, 0, p.width, 50, 255);
+          let azul = p.map(p.mouseY, 0, p.height, 50, 255);
+          p.noStroke();
+          p.fill(vermelho, 100, azul);
+          p.circle(p.mouseX, p.mouseY, 40);
+        };
+
+        p.mousePressed = function () {
+          if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+            p.background(20);
+          }
+        };
+      });
+
+      // --- PROJETO 2: JOGO DE CORRIDA ---
+      new p5(function (p) {
+        let xJogadores = [0, 0, 0, 0];
+        let yJogadores = [60, 120, 180, 240];
+        let jogadores = ["🏎️", "🚗", "🚕", "🚙"];
+        let teclas = ["a", "s", "d", "f"];
+        let quantidade = jogadores.length;
+
+        p.setup = function () {
+          let cnv = p.createCanvas(360, 280);
+          cnv.parent("tela-corrida");
+        };
+
+        p.draw = function () {
+          if (p.focused) {
+            p.background("#D2EBB5");
+          } else {
+            p.background("rgb(238,178,178)");
+          }
+
+          p.textSize(32);
+          for (let i = 0; i < quantidade; i++) {
+            p.text(jogadores[i], xJogadores[i], yJogadores[i]);
+          }
+
+          p.fill("white");
+          p.rect(310, 0, 10, 280);
+          p.fill("black");
+          for (let yAtual = 0; yAtual < 280; yAtual += 20) {
+            p.rect(310, yAtual, 10, 10);
+          }
+
+          for (let i = 0; i < quantidade; i++) {
+            if (xJogadores[i] > 310) {
+              p.fill("black");
+              p.textSize(20);
+              p.text("Jogador " + (i + 1) + " venceu!", 70, 140);
+              p.noLoop();
+            }
+          }
+        };
+
+        p.keyReleased = function () {
+          for (let i = 0; i < quantidade; i++) {
+            if (p.key == teclas[i]) {
+              xJogadores[i] += p.random(20);
+            }
+          }
+        };
+
+        p.mousePressed = function () {
+          if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+            let indice = p.floor(p.random(quantidade));
+            xJogadores[indice] += p.random(25);
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
